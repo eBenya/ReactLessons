@@ -1,32 +1,14 @@
 import React from 'react';
 
 function App() {
-  const num = 123;
-
-  const getDigitsSumWithMapping = (n) =>
-    num.toString().split('').map(x => parseInt(x)).reduce((a, b) => a + b);
-  const getDigitsSum = (n) => {
-    let sum = 0;
-    if (n < 0) {
-      n *= -1;
-    }
-    while (n > 0) {
-      sum += n % 10;
-      n = Math.floor(n / 10);
-    }
-    return sum;
+  function getEvent(name, e, age){
+    console.log(e.target);
+    console.log(name + ' ' + age);
   }
-
-  return (
-    <>
-      <div>
-        summ all numbers {num} with mapping: {getDigitsSumWithMapping(num)}
-      </div>
-      <div>
-        summ all numbers {num}: {getDigitsSum(num)}
-      </div>
-    </>
-  );
+	
+	return <div>
+		<button onClick={kek => getEvent('user', kek, 16)}>button</button>
+	</div>;
 }
 
 export default App;

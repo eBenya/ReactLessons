@@ -1,39 +1,29 @@
 import React from 'react';
 
 function App() {
-  const isAdult = true;
-  const isAdmin = true;
-  let text;
-  let adminContent;
+  const num = 123;
 
-  if (isAdmin) {
-    adminContent = (
-      <>
-        <h5>Admin content:</h5>
-        <p>text</p>
-      </>
-    );
+  const getDigitsSumWithMapping = (n) =>
+    num.toString().split('').map(x => parseInt(x)).reduce((a, b) => a + b);
+  const getDigitsSum = (n) => {
+    let sum = 0;
+    if (n < 0) {
+      n *= -1;
+    }
+    while (n > 0) {
+      sum += n % 10;
+      n = Math.floor(n / 10);
+    }
+    return sum;
   }
-  if (isAdult) {
-    text = <p>Is once paragraph</p>
-  }
-  else {
-    text = <p>Is another paragraph</p>
-  }
-
-  const isAuth = false;
 
   return (
     <>
       <div>
-        <h5>Content:</h5>
-        {text}
+        summ all numbers {num} with mapping: {getDigitsSumWithMapping(num)}
       </div>
       <div>
-        {adminContent}
-      </div>
-      <div>
-        {!isAuth && <p>ternary operator</p>}
+        summ all numbers {num}: {getDigitsSum(num)}
       </div>
     </>
   );

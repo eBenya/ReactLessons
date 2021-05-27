@@ -21,3 +21,7 @@ code {
 .Paragraph3{
   background-color: yellow;
 }
+
+.borderedDiv{
+  border: 2px rgba(146, 161, 83, 0.904) solid;
+}

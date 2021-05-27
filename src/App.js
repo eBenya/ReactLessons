@@ -1,90 +1,80 @@
 import React, { useState } from 'react';
-import Nanoid, { nanoid } from 'nanoid';
 
 function App() {
-	function id() {
-		return nanoid();
+
+	const [value, setValue] = useState('');
+
+	function handleChange(event) {
+		setValue(event.target.value);
+		sumAllNumbers();
 	}
 
-	let [inputVal1, setInputVal1] = useState(0);
-	let [inputVal2, setInputVal2] = useState(0);
-	let [sumResult, setSumResult] = useState(inputVal1+inputVal2);
-	let [multResult, setMultResult] = useState(inputVal1+inputVal2);
-
-	function calc(){
-		calcSum();
-		calcMult();
-	}
-	function calcSum(){
-		let res = Number(inputVal1) + Number(inputVal2);
-		setSumResult(res);
-	}
-	function calcMult(){
-		let res = Number(inputVal1) * Number(inputVal2);
-		setMultResult(res);
+	let [sum, setSum] = useState(0);
+	function sumAllNumbers() {
+		let arr = value.split(' ');
+		let res = arr.map(x => Number.isNaN(Number(x)) ? 0 : Number(x))
+			.reduce((sum, i) => sum += i);
+		setSum(res);
 	}
 
-	let [date1, setDate1] = useState((new Date()).toISOString().split('T')[0]);
-	let [date2, setDate2] = useState((new Date()).toISOString().split('T')[0]);
-	let [diffDate, setDiffDate] = useState("");
-	function calcDiffInDays(){
-		let d1 = new Date(date1);
-		let d2 = new Date(date2);
-		let res = Math.abs(d1 - d2)/1000/60/60/24;
-		setDiffDate(res);
-	}
-
-	let [number, setNumber] = useState(0);
-	let [sumAllDigits, setSumAllDigits] = useState(0);
-	let [multAllDivisors, setMultAllDivisors] = useState(0);
-	function calcAll(){
-		calcSumAllDigits();
-		calcMultAllDivisors();
-	}
-	function calcSumAllDigits(){
-		let num = Math.abs(Number(number));
-		let sum=0;
-		while(num>0){
-			sum += num%10;
-			num = parseInt(Math.floor(num/10));
+	let [isOnline, setIsOnline] = useState(false);
+	let [mess, setMess] = useState('');
+	function writeToUser() {
+		if (isOnline) {
+			setMess('Hi');
 		}
-		setSumAllDigits(sum);
-	}
-	function calcMultAllDivisors(){
-		let num = Math.abs(Number(number));
-		let res = 1;
-		let partNum = parseInt(Math.floor(num/2));
-		for(let i = 1; i <= partNum; i++){
-			if(num%i == 0){
-				res *= i;
-			}
+		else {
+			setMess('Bye');
 		}
-		setMultAllDivisors(res);
 	}
 
+	const htmlName = "HTML";
+	const cssName = "CSS";
+	const jsName = "JS";
+	let [knowCSS, setKnowCSS] = useState(false);
+	let [knowJS, setKnowJS] = useState(false);
+	let [knowHTML, setKnowHTML] = useState(false);
+
+	let [isAdult, setIsAdult] = useState(false);
+	let [message, setMessage] = useState('');
+	function adultChangeHandler() {
+		setIsAdult(!isAdult);
+
+		if (!isAdult) {
+			setMessage('Yes');
+		}
+		else {
+			setMessage('No');
+		}
+	}
 	return (
 		<>
 			<div className="borderedDiv">
-				<input value={inputVal1} onChange={e=>setInputVal1(e.target.value)}/>
-				<input value={inputVal2} onChange={e=>setInputVal2(e.target.value)}/>
-				<button onClick={calc}>calc</button> <br></br>
-
-				<span>{inputVal1} + {inputVal2} = {sumResult}</span> <br/>
-				<span>{inputVal1} * {inputVal2} = {multResult}</span> <br/>
-			</div>		
+				<textarea value={value} onChange={handleChange} />
+				<p>{value}</p>
+				<p>Text length: {value.length}</p>
+				<p>Sum all numbers = {sum}</p>
+			</div>
 			<div className="borderedDiv">
-				<input value={date1} onChange={e=>setDate1(e.target.value)}/>
-				<input value={date2} onChange={e=>setDate2(e.target.value)}/>
-				<button onClick={calcDiffInDays}>calc</button> <br></br>
-
-				<span>{date1} - {date2} = {diffDate}</span> <br/>
-			</div>		
+				<input type="checkbox" checked={isOnline} onChange={() => setIsOnline(!isOnline)} />
+				<button onClick={writeToUser}>write</button>
+				<p>{mess}</p>
+			</div>
 			<div className="borderedDiv">
-				<input value={number} onChange={e=>setNumber(e.target.value)} onBlur={calcAll}/>		
-				<br/>
-				<span>Sum of all digits = {sumAllDigits}</span> <br/>
-				<span>Multiple all divisors = {multAllDivisors}</span> <br/>
-			</div>	
+				{htmlName}:<input type="checkbox" checked={knowHTML} onChange={() => setKnowHTML(!knowHTML)} placeholder="HTML:"></input>
+				{cssName}:<input type="checkbox" checked={knowCSS} onChange={() => setKnowCSS(!knowCSS)} placeholder="CSS:"></input>
+				{jsName}:<input type="checkbox" checked={knowJS} onChange={() => setKnowJS(!knowJS)} placeholder="JS:"></input>
+				<p>
+					I know: {knowHTML ? (htmlName + ';') : ''} {knowCSS ? (cssName + ';') : ''} {knowJS ? (jsName + ';') : ''}
+				</p>
+			</div>
+			<div className="borderedDiv">
+				Are you 18? <input type="checkbox" checked={isAdult} onChange={adultChangeHandler} />
+				 <h2>{message}</h2>				
+				<p hidden={!isAdult}>
+					Adut content...
+				</p>
+			</div>
 		</>
 	);
 }

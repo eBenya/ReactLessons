@@ -2,79 +2,76 @@ import React, { useState } from 'react';
 
 
 function App() {
-	const [notes, setNotes] = useState([1, 2, 3, 4, 5]);
 
-	const res = notes.map((val, i) => {
-		return <p key={i}>{val}</p>;
+	const [notes, setNotes] = useState([1, 2, 3, 4]);
+	const renderNotes = notes.map((val, i) => {
+		return <input key={i} value={val} onChange={e => setNote(e, i)} />
 	});
+	function getSum(arr) {
+		let sum = 0;
 
-	function addElement() {
-		setNotes([...notes, notes.length + 1]);
+		for (const elem of arr) {
+			sum += +elem;
+		}
+
+		return sum;
 	}
-	function removeElement() {
-		let temp = notes.slice();
-		temp.pop();
-		setNotes(temp);
-	}
-	let [elementNumber, setElementNumber] = useState(0);
-	let [newValue, setNewValue] = useState(0);
-	function removeConcreeteElement() {
-		let temp = notes.slice();
-		temp.splice(elementNumber, 1);
-		setNotes(temp);
-		//setNotes([...notes.slice(0, elementNumber), ...notes.slice(elementNumber,1)]); // Надо изучить деструтуризацию!!!
-	}
-	function editElement() {
-		let temp = notes.slice();
-		temp[elementNumber] = newValue;
-		setNotes(temp);
-	}
-	function sort() {
-		let temp = notes.slice().sort();
-		setNotes(temp);
-	}
-	function reverse() {
-		let temp = notes.slice().reverse();
+	function setNote(event, iter) {
+		var temp = notes.slice();
+		temp[iter] = event.target.value;
 		setNotes(temp);
 	}
 
-	const [charArr, setCharArr] = useState(['a', 'b', 'c', 'd', 'e']);
-	const [inputText, setInputText] = useState('');
-	const ULContent = charArr.map((val, i) => {
+	const strings = ['kek', 'a', 'b', 'c', 'd', 'e'];
+	const [notes2, setNotes2] = useState(strings);
+	const [editNote, setEditNote] = useState(null);
+	const renderNotes2 = notes2.map((val, i) => {
 		return (
-			<li key={i}>{val} <button onClick={()=>removeIndex(i)}>remove</button></li>
+			<li key={i} onClick={() => editVal(i)}>{val} </li>
 		);
-	});
-	function addULElemnt() {
-		setCharArr([...charArr, inputText])
-		setInputText('');
+	})
+	const renderUL = (<ul>{renderNotes2}</ul>)
+	function editVal(iter) {
+		setEditNote({ id: iter, val: notes2[iter] });
 	}
-	function removeIndex(index){
-		let temp = charArr.slice()
-		temp.splice(index, 1);
-		setCharArr(temp);
+	function endEdit() {
+		let temp = notes2.slice();
+
+		if (editNote != null && editNote.id != null) {
+			if (editNote.val === '') {
+				temp.splice(editNote.id, 1);
+			}
+			else {
+				temp[editNote.id] = editNote.val;
+			}
+		}
+		else {
+			temp.push(editNote.val);
+		}
+		setNotes2(temp);
+		setEditNote(null);
 	}
+	function onChangeInput(event) {
+		if (editNote != null) {
+			setEditNote({ ...editNote, val: event.target.value });
+		}
+		else {
+			setEditNote({ id: null, val: event.target.value });
+		}
+	}
+
 	return (
 		<>
 			<div className="borderedDiv">
-				<button onClick={addElement}>add</button>
-				<button onClick={removeElement}>remove last</button> <br />
-
-				number of element: <input type="number" value={elementNumber} onChange={e => setElementNumber(e.target.value)} /> <br />
-				new value of element: <input type="number" value={newValue} onChange={e => setNewValue(e.target.value)} /> <br />
-				<button onClick={removeConcreeteElement}>remove element</button>
-				<button onClick={editElement}>edit element</button> <br />
-				<button onClick={sort}>sort</button>
-				<button onClick={reverse}>reverse</button>
-				{res}
+				{renderNotes}
+				<br />
+				Sum = {getSum(notes)}
 			</div>
 
 			<div className="borderedDiv">
-				<input value={inputText} onBlur={addULElemnt} onChange={e => setInputText(e.target.value)} />
-				<br />
-				<ul>
-					{ULContent}
-				</ul>
+				Put one of the next elements:<br />
+				{renderUL}
+				<input value={editNote !== null ? editNote.val : ''} onChange={e => onChangeInput(e)} onBlur={endEdit} />
 			</div>
 		</>
 	);

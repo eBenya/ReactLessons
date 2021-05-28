@@ -2,49 +2,56 @@ import React, { useState } from 'react';
 
 
 function App() {
-	let cityes = ['city_1', 'city_2', 'city_3', 'city_4', 'city_5', 'city_6', 'city_7', 'city_8', 'city_9', 'city_0'];
-	let [city, setCity] = useState('');
+	const arr = ['', '', ''];
+	const languages = ['HTML', 'CSS', 'JS'];
+	const [value, setValue] = useState(1);
+	const [language, setLanguage] = useState(1);
 
-	function cityRender(name, i) {
+	function renderRadio(nameR, val, iterator, state, setVal) {
 		return (
-			<option key={i}>{name}{i}</option>
+			<span key={iterator}>
+				{val}
+				<input
+					type="radio"
+					name={nameR}
+					value={iterator}
+					checked={state == iterator ? true : false}
+					onChange={(e) => setVal(e.target.value)}
+				/>{'   '}
+			</span>
 		);
 	}
-
-	const opts = cityes.map((content, i) => {
-		return <option key={i} value={i}>{content}</option> // cityRender(content, i);
+	let op = arr.map((val, i) => {
+		return renderRadio('radio', val, i, value, setValue);
+	});
+	let langs = languages.map((val, i) => {
+		return renderRadio('lang', val, i, language, setLanguage);
 	});
 
-	const [value, setValue] = useState('');
+	const [deffault, setDeffault] = useState('kek');
+
 	return (
 		<>
 			<div className="borderedDiv">
-				<select value={city} onChange={(e) => setCity(e.target.value)}>
-					{opts}
-				</select>
 				<p>
-					Yot put: {city}	<br/>
-					It number: {city} <br/>
-					It value: {cityes[city]}
+					{op} <br />
+					You put: {Number(value) + 1}
 				</p>
 			</div>
 			<div className="borderedDiv">
-				Your age group:
-				<select value={value} onChange={event => setValue(event.target.value)}>
-					<option value="1">0-12</option>
-					<option value="2">13-17</option>
-					<option value="3">18-25</option>
-					<option value="4">over 25</option>
-				</select>
 				<p>
-					your age group 
-					{value === '1' && ' from 0 to 12'}
-					{value === '2' && ' from 12 to 17'}
-					{value === '3' && ' from 18 to 25'}
-					{value === '4' && ' over 25'}
+					{langs} <br />
+						Your favorite language:{languages[language]} <br />
+					{languages[language] === languages[2] ? 'Krasauchegg!!!' : ''}
 				</p>
 			</div>
+			<div className="borderedDiv">
+				Set value without OnChange:<input value={deffault}/> <br/>
+				Set defaultValue without OnChange:<input defaultValue={deffault}/> <br/><br/>
 
+				Set value with OnChange:<input value={deffault} onChange={e=>setDeffault(e.target.value)}/> <br/>
+				Set defaultValue with OnChange:<input defaultValue={deffault} onChange={e=>setDeffault(e.target.value)}/><br/>
+			</div>
 		</>
 	);
 }

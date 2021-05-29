@@ -22,74 +22,96 @@ const initNotes = [
 		prop3: 'value33',
 	},
 ];
+const initProds = [
+	{ id: getNewId(), name: 'prod1', catg: 'catg1', cost: 100 },
+	{ id: getNewId(), name: 'prod2', catg: 'catg2', cost: 200 },
+	{ id: getNewId(), name: 'prod3', catg: 'catg3', cost: 300 },
+];
 
-const testId = 'IWSpfBPSV3SXgRF87uO74';
-const newTestElem = {
-	id: 'GMNCZnFT4rbBP6cirA0Ha',
-	prop1: 'value41',
-	prop2: 'value42',
-	prop3: 'value43',
-};
 function getNewId() {
 	return nanoid();
 }
 
 function App() {
+	const [products, setProducts] = useState(initProds);
 	const [notes, setNotes] = useState(initNotes);
-	const [cahngeNode, setChangeNode] = useState(null);
-	const renderObjs = notes.map(val => {
-		return (
-			<p key={val.id} onClick={() => setChangeNode(val)}>
-				<span>{val.prop1}</span>
-				<span>{val.prop2}</span>
-				<span>{val.prop3}</span>
-			</p>
-		);
-	});
-	function endEditObj() {
-		setNotes(notes.map(note => note.id === cahngeNode.id ? cahngeNode : note));
-		setChangeNode(null);
-	}
-	const renderChangeFormObj = (
-		<p>
-			<input value={cahngeNode === null ? '' : cahngeNode.prop1} onChange={(e) => setChangeNode({ ...cahngeNode, ...{ prop1: e.target.value } })} />
-			<input value={cahngeNode === null ? '' : cahngeNode.prop2} onChange={(e) => setChangeNode({ ...cahngeNode, ...{ prop2: e.target.value } })} />
-			<input value={cahngeNode === null ? '' : cahngeNode.prop3} onChange={(e) => setChangeNode({ ...cahngeNode, ...{ prop3: e.target.value } })} />
-			<button onClick={endEditObj}>Apply</button>
-		</p>
+
+	/*const renderBodyProductTable = (
+		<tbody>
+			{
+				products.map((val, it) => {
+					return (
+						<tr key={val.id}>
+							<td>{val.id}</td>
+							<td>{val.name}</td>
+							<td>{val.catg}</td>
+							<td>{val.cost}</td>
+						</tr>
+					);
+				})
+			}
+		</tbody>
 	);
-
-	function generateNewElement() {
-		const newElem = {
-			id: getNewId(),
-			prop1: 'value' + (notes.length + 1) + '1',
-			prop2: 'value' + (notes.length + 1) + '2',
-			prop3: 'value' + (notes.length + 1) + '3',
-		}
-		//setNotes([...notes, newElem]);
-		return newElem;
+	const renderProductTable = (
+		<table border="1px">
+			{renderTableHead(products[0])}
+			{<thead>
+				<tr>
+					<th>id</th>
+					<th>name</th>
+					<th>catg</th>
+					<th>cost</th>
+				</tr>
+			</thead>}
+			{renderBodyProductTable}
+		</table>
+	);*/
+	function renderTableHead(obj) {
+		return (
+			<thead>
+				<tr>
+					{Object.keys(obj).map((val, it) => <th key={it}>{val}</th>)}
+				</tr>
+			</thead>
+		);
 	}
-
-	function takeItem() {
-		setChangeNode(notes.reduce((res, note) => note.id === testId ? note : res, ''));
+	function renderTableRow(keyValuePairs, elementKey) {
+		return (
+			<tr key={elementKey}>
+				{Object.entries(keyValuePairs).map(x => <td key={x[0]}>{x[1]}</td>)}
+			</tr>
+		);
+	}
+	function renderTableBody(objects) {
+		return (
+			<tbody>
+				{objects.map((val, it) => renderTableRow(val, it))}
+			</tbody>
+		);
+	}
+	function renderTable(objects) {
+		if (objects.length > 0) {
+			return (
+				<table border="1px">
+					{renderTableHead(objects[0])}
+					{renderTableBody(objects)}
+				</table>
+			)
+		}
+		return <span>404 NotFound</span>
 	}
 
 	return (
 		<>
-			<div className="borderedDiv">
-				<button onClick={() => setNotes(notes.filter(note => note.id !== testId))}>delete test element</button>
-				<button onClick={() => setNotes([...notes, generateNewElement()])}>Add new element</button>
-				<br />
-				<hr />
-				Edit object:<br />
-				{renderChangeFormObj}
-				<hr />
-				<p>
-					<input type="button" defaultValue={"get " + testId + " obj"} onClick={takeItem}></input>
-					<p>prop1:{cahngeNode === null ? '' : cahngeNode.prop1}</p>
-				</p>
-				<hr />
-				{renderObjs}
+			<h3>Lesson examples:</h3>
+			<div className="borderedExaplesLessonsFromTasks">
+				{renderTable(notes)}
+			</div>
+			<h3>Tasks:</h3>
+			<div className="borderedExaplesLessonsFromTasks">
+				<div className="borderedDiv">
+					{renderTable(products)}
+				</div>
 			</div>
 		</>
 	);

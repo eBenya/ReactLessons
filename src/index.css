@@ -25,3 +25,7 @@ code {
 .borderedDiv{
   border: 2px rgba(146, 161, 83, 0.904) solid;
 }
+
+.borderedExaplesLessonsFromTasks{
+  border: 4px rgba(189, 70, 40, 0.904) solid;
+}

@@ -1,55 +1,95 @@
+import { render } from '@testing-library/react';
 import React, { useState } from 'react';
+import { nanoid } from 'nanoid';
 
+const initNotes = [
+	{
+		id: 'GYi9G_uC4gBF1e2SixDvu',
+		prop1: 'value11',
+		prop2: 'value12',
+		prop3: 'value13',
+	},
+	{
+		id: 'IWSpfBPSV3SXgRF87uO74',
+		prop1: 'value21',
+		prop2: 'value22',
+		prop3: 'value23',
+	},
+	{
+		id: 'JAmjRlfQT8rLTm5tG2m1L',
+		prop1: 'value31',
+		prop2: 'value32',
+		prop3: 'value33',
+	},
+];
+
+const testId = 'IWSpfBPSV3SXgRF87uO74';
+const newTestElem = {
+	id: 'GMNCZnFT4rbBP6cirA0Ha',
+	prop1: 'value41',
+	prop2: 'value42',
+	prop3: 'value43',
+};
+function getNewId() {
+	return nanoid();
+}
 
 function App() {
-
-	const [obj, setObj] = useState({
-		prop1: 'value1',
-		prop2: 'value2',
-		prop3: 'value3',
+	const [notes, setNotes] = useState(initNotes);
+	const [cahngeNode, setChangeNode] = useState(null);
+	const renderObjs = notes.map(val => {
+		return (
+			<p key={val.id} onClick={() => setChangeNode(val)}>
+				<span>{val.prop1}</span>
+				<span>{val.prop2}</span>
+				<span>{val.prop3}</span>
+			</p>
+		);
 	});
-	function changeObj(obj, propName, setFunc, event) {
-		let temp = Object.assign({}, obj);
-		temp[propName] = event.target.value;
-		setFunc(temp);
+	function endEditObj() {
+		setNotes(notes.map(note => note.id === cahngeNode.id ? cahngeNode : note));
+		setChangeNode(null);
+	}
+	const renderChangeFormObj = (
+		<p>
+			<input value={cahngeNode === null ? '' : cahngeNode.prop1} onChange={(e) => setChangeNode({ ...cahngeNode, ...{ prop1: e.target.value } })} />
+			<input value={cahngeNode === null ? '' : cahngeNode.prop2} onChange={(e) => setChangeNode({ ...cahngeNode, ...{ prop2: e.target.value } })} />
+			<input value={cahngeNode === null ? '' : cahngeNode.prop3} onChange={(e) => setChangeNode({ ...cahngeNode, ...{ prop3: e.target.value } })} />
+			<button onClick={endEditObj}>Apply</button>
+		</p>
+	);
+
+	function generateNewElement() {
+		const newElem = {
+			id: getNewId(),
+			prop1: 'value' + (notes.length + 1) + '1',
+			prop2: 'value' + (notes.length + 1) + '2',
+			prop3: 'value' + (notes.length + 1) + '3',
+		}
+		//setNotes([...notes, newElem]);
+		return newElem;
 	}
 
-	const initDate = {
-		year: 2025,
-		month: 12,
-		day: 31,
-		toString(){
-			return  this.year+'-'+this.month+'-'+this.day;
-		}
+	function takeItem() {
+		setChangeNode(notes.reduce((res, note) => note.id === testId ? note : res, ''));
 	}
-	const [date, setDate] = useState(initDate);
 
 	return (
 		<>
 			<div className="borderedDiv">
-				<span>{obj.prop1}</span> <button onClick={() => setObj({ ...obj, ...{ prop1: '!' } })}>change</button> <br />
-				<span>{obj.prop2}</span> <button onClick={() => setObj({ ...obj, ...{ prop2: '@' } })}>change</button> <br />
-				<span>{obj.prop3}</span> <button onClick={() => setObj({ ...obj, ...{ prop3: '#' } })}>change</button> <br />
-			</div>
-
-			<div className="borderedDiv">
-				<input value={obj.prop1} onChange={e => changeObj(obj, 'prop1', setObj, e)} />
-				<input value={obj.prop2} onChange={e => changeObj(obj, 'prop2', setObj, e)} />
-				<input value={obj.prop3} onChange={e => changeObj(obj, 'prop3', setObj, e)} />
+				<button onClick={() => setNotes(notes.filter(note => note.id !== testId))}>delete test element</button>
+				<button onClick={() => setNotes([...notes, generateNewElement()])}>Add new element</button>
 				<br />
-				{obj.prop1}-{obj.prop2}-{obj.prop3}
-			</div>
-
-			<div className="borderedDiv">
+				<hr />
+				Edit object:<br />
+				{renderChangeFormObj}
+				<hr />
 				<p>
-					year: {date.year}; moth: {date.month}; day: {date.day};
-					day of weak: {(new Date(date.toString())).getDay()};
-					<br/>
-					Edit fields:<br/>
-					<input value={date.year} onChange={e=>changeObj(date, 'year', setDate, e)} placeholder="year"/>
-					<input value={date.month} onChange={e=>changeObj(date, 'month', setDate, e)} placeholder="month"/>
-					<input value={date.day} onChange={e=>changeObj(date, 'day', setDate, e)} placeholder="day"/>
+					<input type="button" defaultValue={"get " + testId + " obj"} onClick={takeItem}></input>
+					<p>prop1:{cahngeNode === null ? '' : cahngeNode.prop1}</p>
 				</p>
+				<hr />
+				{renderObjs}
 			</div>
 		</>
 	);

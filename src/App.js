@@ -36,36 +36,6 @@ function App() {
 	const [products, setProducts] = useState(initProds);
 	const [notes, setNotes] = useState(initNotes);
 
-	/*const renderBodyProductTable = (
-		<tbody>
-			{
-				products.map((val, it) => {
-					return (
-						<tr key={val.id}>
-							<td>{val.id}</td>
-							<td>{val.name}</td>
-							<td>{val.catg}</td>
-							<td>{val.cost}</td>
-						</tr>
-					);
-				})
-			}
-		</tbody>
-	);
-	const renderProductTable = (
-		<table border="1px">
-			{renderTableHead(products[0])}
-			{<thead>
-				<tr>
-					<th>id</th>
-					<th>name</th>
-					<th>catg</th>
-					<th>cost</th>
-				</tr>
-			</thead>}
-			{renderBodyProductTable}
-		</table>
-	);*/
 	function renderTableHead(obj) {
 		return (
 			<thead>
@@ -75,30 +45,41 @@ function App() {
 			</thead>
 		);
 	}
-	function renderTableRow(keyValuePairs, elementKey) {
+	function renderTableRow(keyValuePairs, elementKey, stateObj, changeStateFunction) {
 		return (
 			<tr key={elementKey}>
 				{Object.entries(keyValuePairs).map(x => <td key={x[0]}>{x[1]}</td>)}
+				{
+					changeStateFunction ?
+						<td><button onClick={() => delElementOnNumber(stateObj, elementKey, changeStateFunction)}>del</button></td>
+						: null
+				}
 			</tr>
 		);
 	}
-	function renderTableBody(objects) {
+	function renderTableBody(objects, changeStateFunction) {
 		return (
 			<tbody>
-				{objects.map((val, it) => renderTableRow(val, it))}
+				{objects.map((val, it) => renderTableRow(val, it, objects, changeStateFunction))}
 			</tbody>
 		);
 	}
-	function renderTable(objects) {
+	function renderTable(objects, changeStateFunction) {
 		if (objects.length > 0) {
 			return (
 				<table border="1px">
 					{renderTableHead(objects[0])}
-					{renderTableBody(objects)}
+					{renderTableBody(objects, changeStateFunction)}
 				</table>
 			)
 		}
 		return <span>404 NotFound</span>
+	}
+
+	function delElementOnNumber(stateObj, key, changeStateFunc){
+		let temp = stateObj.slice();		
+		temp.splice(key,1);
+		changeStateFunc(temp);
 	}
 
 	return (
@@ -110,7 +91,7 @@ function App() {
 			<h3>Tasks:</h3>
 			<div className="borderedExaplesLessonsFromTasks">
 				<div className="borderedDiv">
-					{renderTable(products)}
+					{renderTable(products, setProducts)}					
 				</div>
 			</div>
 		</>

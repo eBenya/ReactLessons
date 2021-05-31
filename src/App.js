@@ -54,7 +54,11 @@ function App() {
 					changeStateFunction ?
 						<td>
 							<button onClick={() => delElementOnNumber(stateObjs, elementKey, changeStateFunction)}>del</button>
-							<button onClick={() => inputStateChangeFunc(obj)}>Edit</button>
+
+							{
+								((inputState || inputState === null) && inputStateChangeFunc) ? <button onClick={() => inputStateChangeFunc(obj)}>Edit</button> : ''
+							}
+
 						</td>
 						: null
 				}
@@ -80,7 +84,7 @@ function App() {
 										{x[0]}:
 										<input
 											value={inputState !== null ? inputState[x[0]] : ''}
-											onChange={e => changePropInputFormObj(inputState, inputStateChangeFunc, x[0], e.target.value)}
+											onChange={e => changePropInputFormObj(inputState, inputStateChangeFunc, x[0], e.target.value, objsCollection[0])}
 										/>{' '}
 									</span>
 								);
@@ -91,10 +95,15 @@ function App() {
 			</>
 		);
 	}
-	function changePropInputFormObj(objState, changeFunctionState, keyName, newValue) {
-		var temp = Object.assign({}, objState);
-		if (!('id' in temp)) {
-			temp.id = ' ';
+	function changePropInputFormObj(objState, changeFunctionState, keyName, newValue, supportObj) {
+		let temp = {};
+		for (let key in supportObj) {
+			if (objState != null && key in objState) {
+				temp[key] = objState[key];
+			}
+			else {
+				temp[key] = '';
+			}
 		}
 		temp[keyName] = newValue;
 		changeFunctionState(temp);
@@ -103,7 +112,7 @@ function App() {
 		if (objects.length > 0) {
 			return (
 				<>
-					{((inputObjState || inputState === null) && changeInputFormFunc && changeStateFunction) ? renderAddForm(objects, changeStateFunction, inputObjState, changeInputFormFunc) : null}
+					{((inputObjState || inputObjState === null) && changeInputFormFunc && changeStateFunction) ? renderAddForm(objects, changeStateFunction, inputObjState, changeInputFormFunc) : null}
 					<table border="1px">
 						{renderTableHead(objects[0])}
 						{renderTableBody(objects, changeStateFunction, inputObjState, changeInputFormFunc)}
@@ -120,11 +129,24 @@ function App() {
 		changeStateFunc(temp);
 	}
 	function addNewElement(objCollection, changeCollectionStateFunc, newObj, clearInputFunc) {
-		if (objCollection[0].id) {
-			newObj.id = getNewId();
+		if (newObj != null) {
+			if ('id' in newObj) {
+				if (newObj.id === null || newObj.id === '') {
+					newObj.id = getNewId();
+					//AddNew
+					changeCollectionStateFunc([...objCollection, newObj]);
+				}
+				else {
+					//Edit
+					changeCollectionStateFunc(objCollection.map(obj => obj.id === newObj.id ? newObj : obj));
+				}
+			}
+			// If obj have`t id, then we can only add element, witout edit exist.
+			else {
+				changeCollectionStateFunc([objCollection, newObj]);
+			}
+			clearInputFunc(null);
 		}
-		changeCollectionStateFunc([...objCollection, newObj]);
-		clearInputFunc(null);
 	}
 
 	return (

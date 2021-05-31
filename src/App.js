@@ -72,7 +72,7 @@ function App() {
 			</tbody>
 		);
 	}
-	function renderAddForm(objsCollection, changeObjStateFunc, inputState, inputStateChangeFunc) {
+	function renderAddOrEditForm(objsCollection, changeObjStateFunc, inputState, inputStateChangeFunc) {
 		return (
 			<>
 				{
@@ -91,7 +91,7 @@ function App() {
 							}
 						})
 				}
-				<button onClick={() => addNewElement(objsCollection, changeObjStateFunc, inputState, inputStateChangeFunc)}>Add new</button>
+				<button onClick={() => addOrEditElement(objsCollection, changeObjStateFunc, inputState, inputStateChangeFunc)}>Add/Edit</button>
 			</>
 		);
 	}
@@ -112,7 +112,7 @@ function App() {
 		if (objects.length > 0) {
 			return (
 				<>
-					{((inputObjState || inputObjState === null) && changeInputFormFunc && changeStateFunction) ? renderAddForm(objects, changeStateFunction, inputObjState, changeInputFormFunc) : null}
+					{((inputObjState || inputObjState === null) && changeInputFormFunc && changeStateFunction) ? renderAddOrEditForm(objects, changeStateFunction, inputObjState, changeInputFormFunc) : null}
 					<table border="1px">
 						{renderTableHead(objects[0])}
 						{renderTableBody(objects, changeStateFunction, inputObjState, changeInputFormFunc)}
@@ -128,7 +128,7 @@ function App() {
 		temp.splice(key, 1);
 		changeStateFunc(temp);
 	}
-	function addNewElement(objCollection, changeCollectionStateFunc, newObj, clearInputFunc) {
+	function addOrEditElement(objCollection, changeCollectionStateFunc, newObj, clearInputFunc) {
 		if (newObj != null) {
 			if ('id' in newObj) {
 				if (newObj.id === null || newObj.id === '') {

@@ -35,6 +35,7 @@ function getNewId() {
 function App() {
 	const [products, setProducts] = useState(initProds);
 	const [notes, setNotes] = useState(initNotes);
+	const [inputState, setInputState] = useState(null);
 
 	function renderTableHead(obj) {
 		return (
@@ -45,41 +46,85 @@ function App() {
 			</thead>
 		);
 	}
-	function renderTableRow(keyValuePairs, elementKey, stateObj, changeStateFunction) {
+	function renderTableRow(obj, elementKey, stateObjs, changeStateFunction, inputState, inputStateChangeFunc) {
 		return (
 			<tr key={elementKey}>
-				{Object.entries(keyValuePairs).map(x => <td key={x[0]}>{x[1]}</td>)}
+				{Object.entries(obj).map(x => <td key={x[0]}>{x[1]}</td>)}
 				{
 					changeStateFunction ?
-						<td><button onClick={() => delElementOnNumber(stateObj, elementKey, changeStateFunction)}>del</button></td>
+						<td>
+							<button onClick={() => delElementOnNumber(stateObjs, elementKey, changeStateFunction)}>del</button>
+							<button onClick={() => inputStateChangeFunc(obj)}>Edit</button>
+						</td>
 						: null
 				}
 			</tr>
 		);
 	}
-	function renderTableBody(objects, changeStateFunction) {
+	function renderTableBody(objects, changeStateFunction, inputState, inputStateChangeFunc) {
 		return (
 			<tbody>
-				{objects.map((val, it) => renderTableRow(val, it, objects, changeStateFunction))}
+				{objects.map((val, it) => renderTableRow(val, it, objects, changeStateFunction, inputState, inputStateChangeFunc))}
 			</tbody>
 		);
 	}
-	function renderTable(objects, changeStateFunction) {
+	function renderAddForm(objsCollection, changeObjStateFunc, inputState, inputStateChangeFunc) {
+		return (
+			<>
+				{
+					Object.entries(objsCollection[0])
+						.map(x => {
+							if (x[0] !== 'id') {
+								return (
+									<span key={x[0]}>
+										{x[0]}:
+										<input
+											value={inputState !== null ? inputState[x[0]] : ''}
+											onChange={e => changePropInputFormObj(inputState, inputStateChangeFunc, x[0], e.target.value)}
+										/>{' '}
+									</span>
+								);
+							}
+						})
+				}
+				<button onClick={() => addNewElement(objsCollection, changeObjStateFunc, inputState, inputStateChangeFunc)}>Add new</button>
+			</>
+		);
+	}
+	function changePropInputFormObj(objState, changeFunctionState, keyName, newValue) {
+		var temp = Object.assign({}, objState);
+		if (!('id' in temp)) {
+			temp.id = ' ';
+		}
+		temp[keyName] = newValue;
+		changeFunctionState(temp);
+	}
+	function renderTable(objects, changeStateFunction, inputObjState, changeInputFormFunc) {
 		if (objects.length > 0) {
 			return (
-				<table border="1px">
-					{renderTableHead(objects[0])}
-					{renderTableBody(objects, changeStateFunction)}
-				</table>
+				<>
+					{((inputObjState || inputState === null) && changeInputFormFunc && changeStateFunction) ? renderAddForm(objects, changeStateFunction, inputObjState, changeInputFormFunc) : null}
+					<table border="1px">
+						{renderTableHead(objects[0])}
+						{renderTableBody(objects, changeStateFunction, inputObjState, changeInputFormFunc)}
+					</table>
+				</>
 			)
 		}
 		return <span>404 NotFound</span>
 	}
 
-	function delElementOnNumber(stateObj, key, changeStateFunc){
-		let temp = stateObj.slice();		
-		temp.splice(key,1);
+	function delElementOnNumber(stateObj, key, changeStateFunc) {
+		let temp = stateObj.slice();
+		temp.splice(key, 1);
 		changeStateFunc(temp);
+	}
+	function addNewElement(objCollection, changeCollectionStateFunc, newObj, clearInputFunc) {
+		if (objCollection[0].id) {
+			newObj.id = getNewId();
+		}
+		changeCollectionStateFunc([...objCollection, newObj]);
+		clearInputFunc(null);
 	}
 
 	return (
@@ -91,7 +136,7 @@ function App() {
 			<h3>Tasks:</h3>
 			<div className="borderedExaplesLessonsFromTasks">
 				<div className="borderedDiv">
-					{renderTable(products, setProducts)}					
+					{renderTable(products, setProducts, inputState, setInputState)}
 				</div>
 			</div>
 		</>

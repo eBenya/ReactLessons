@@ -1,33 +1,40 @@
-import React from "react";
+import React from 'react';
+import UserField from './UserField';
 
-function User({ name, surname, age, id, isBanned, banFunc, isEdit, editToogleFunc, editDataFunc }) {
+function User({ obj, banFunc, editToogleFunc, editDataFunc }) {
+    const objKeys = Object.keys(obj);
     return (
         <p>
-            <strong>id:</strong> {id}<br />
-            {
-                isEdit
-                    ?
-                    <input value={name} onChange={e=>editDataFunc(id, 'name', e.target.value)} onBlur={()=>editToogleFunc(id)}/>
-                    :
-                    <span onClick={()=>editToogleFunc(id)}> {name} </span>
-            }
-            {
-                isEdit
-                    ?
-                    <input value={surname} onChange={e=>editDataFunc(id, 'surname', e.target.value)} onBlur={()=>editToogleFunc(id)}/>
-                    :
-                    <span onClick={()=>editToogleFunc(id)}> {surname} </span>
-            }
-            {
-                isEdit
-                    ?
-                    <input value={age} onChange={e=>editDataFunc(id, 'age', e.target.value)} onBlur={()=>editToogleFunc(id)}/>
-                    :
-                    <span onClick={()=>editToogleFunc(id)}> - {age} years</span>
-            }
-            {isBanned ? <font color="red">Banned</font> : ''};
-            <button onClick={() => banFunc(id, !isBanned)}>
-                {isBanned ? 'UnBan' : 'Ban!!!'}
+            <strong>id:</strong> {obj.id}<br />
+
+            <UserField
+                id={obj.id}
+                textContent={obj.name}
+                type={objKeys[1]}
+                isEdit={obj.isEdit}
+                editToogleFunc={editToogleFunc}
+                editDataFunc={editDataFunc}
+            />
+            <UserField
+                id={obj.id}
+                textContent={obj.surname}
+                type={objKeys[2]}
+                isEdit={obj.isEdit}
+                editToogleFunc={editToogleFunc}
+                editDataFunc={editDataFunc}
+            />
+            <UserField
+                id={obj.id}
+                textContent={obj.age}
+                type={objKeys[3]}
+                isEdit={obj.isEdit}
+                editToogleFunc={editToogleFunc}
+                editDataFunc={editDataFunc}
+            />
+
+            {obj.isBanned ? <font color="red">Banned</font> : ''};
+            <button onClick={() => banFunc(obj.id, !obj.isBanned)}>
+                {obj.isBanned ? 'UnBan' : 'Ban!!!'}
                 <img width="25" height="15" src="https://v6q9s5t8.ssl.hwcdn.net/wp-content/uploads/2021/01/banhammer-scaled.jpg"></img>
             </button>
         </p>

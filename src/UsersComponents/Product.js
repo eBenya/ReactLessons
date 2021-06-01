@@ -1,20 +1,25 @@
 import React from 'react';
+import ProductField from './ProductField';
 
 function Product({ id, name, cost, isEdit, toggleMode, editProd }) {
-    return <div>
-        name: {
-			isEdit
-			? <input value={name} onChange={event => editProd(id, 'name', event.target.value)} /> 
-			: <span>{ name }</span>
-		}
-		cost: {
-			isEdit
-			? <input value={cost} onChange={event => editProd(id, 'cost', event.target.value)} /> 
-			: <span>{ cost }</span>
-		}
+	return <div>
+		name: <ProductField
+			id={id}
+			text={name}
+			type="name"
+			isEdit={isEdit}
+			editProd={editProd}
+		/>,
+		cost: <ProductField
+			id={id}
+			text={cost}
+			type="cost"
+			isEdit={isEdit}
+			editProd={editProd}
+		/>
 
-        <button onClick={() => toggleMode(id)}>{isEdit ? 'Save' : 'Edit'}</button>
-    </div>;
+		<button onClick={() => toggleMode(id)}>{isEdit ? 'Save' : 'Edit'}</button>
+	</div>;
 }
 
 export default Product;

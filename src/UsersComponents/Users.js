@@ -14,15 +14,10 @@ const initUsers = [
 
 function Users() {
     const [users, setUsers] = useState(initUsers);
-    const renderUsers = users.map(val => <User
-        key={val.id}
-        name={val.name}
-        surname={val.surname}
-        age={val.age}
-        id={val.id}
-        isBanned={val.isBanned}
+    const renderUsers = users.map(user => <User
+        key={user.id}
+        obj={user}        
         banFunc={banUser}
-        isEdit={val.isEdit}
         editToogleFunc={editUserToogleMode}
         editDataFunc={editUser}
     />

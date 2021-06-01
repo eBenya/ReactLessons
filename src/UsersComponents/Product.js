@@ -1,9 +1,9 @@
 import React from 'react';
 
-function Product(props){
+function Product({name, cost}){
     return <p>
-        name: <span>{props.name}</span>,
-		cost: <span>{props.cost}</span>
+        name: <span>{name}</span>,
+		cost: <span>{cost}</span>
     </p>;
 }
 

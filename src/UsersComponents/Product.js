@@ -1,10 +1,10 @@
 import React from 'react';
 
-function Product({name, cost}){
-    return <p>
+function Product({ name, cost }) {
+    return <div>
         name: <span>{name}</span>,
 		cost: <span>{cost}</span>
-    </p>;
+    </div>;
 }
 
 export default Product;

@@ -7,9 +7,9 @@ function id() {
 }
 
 const initProds = [
-	{id: id(), name: 'product1', cost: 100, inCart: false},
-	{id: id(), name: 'product2', cost: 200, inCart: false},
-	{id: id(), name: 'product3', cost: 300, inCart: false},
+	{id: id(), name: 'product1', cost: 100, isEdit: false},
+	{id: id(), name: 'product2', cost: 200, isEdit: false},
+	{id: id(), name: 'product3', cost: 300, isEdit: false},
 ];
 
 function Products() {
@@ -19,19 +19,30 @@ function Products() {
         id={val.id}
         name={val.name}
         cost={val.cost}
-        inCart={val.inCart}
-        addToCartFunc={addToCart}
+        isEdit={val.isEdit}
+        toggleMode={toggleMode}
+        editProd={editProd}
     />
     );
 
-    function addToCart(id){
-        setProds(prods.map(p=>{
-            if(p.id === id){
-                p.inCart = true;
+    function toggleMode(id){
+        setProds(prods.map(prod => {
+            if (prod.id === id) {
+                prod.isEdit = !prod.isEdit;
             }
-                return p;
+            
+            return prod;
         }));
     }
+    function editProd(id, propName, newValue){
+        setProds(prods.map(prod=>{
+            if(prod.id==id){
+                prod[propName] = newValue;
+            }
+            return prod;
+        }));
+    }
+
     return (
         <div>
             {items}

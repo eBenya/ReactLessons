@@ -1,11 +1,19 @@
 import React from 'react';
 
-function Product({ id, name, cost, inCart, addToCartFunc }) {
+function Product({ id, name, cost, isEdit, toggleMode, editProd }) {
     return <div>
-        name: <span>{name}</span>,
-		cost: <span>{cost}</span>,
-        <span>{inCart ? <strong>inCart</strong> : <strong>not in cart</strong> }</span>
-        {inCart ? '' : <button onClick={()=>addToCartFunc(id)}>add to cart</button>}
+        name: {
+			isEdit
+			? <input value={name} onChange={event => editProd(id, 'name', event.target.value)} /> 
+			: <span>{ name }</span>
+		}
+		cost: {
+			isEdit
+			? <input value={cost} onChange={event => editProd(id, 'cost', event.target.value)} /> 
+			: <span>{ cost }</span>
+		}
+
+        <button onClick={() => toggleMode(id)}>{isEdit ? 'Save' : 'Edit'}</button>
     </div>;
 }
 

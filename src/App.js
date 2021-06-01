@@ -7,114 +7,94 @@ function id() {
 }
 
 const initNotes = [
-	{ text: 'note1', isEdit: false },
-	{ text: 'note2', isEdit: false },
-	{ text: 'note3', isEdit: true },
+	{
+		id: id(),
+		fields: [
+			{ name: 'prop1', value: 'value11', isEdit: false },
+			{ name: 'prop2', value: 'value12', isEdit: false },
+			{ name: 'prop3', value: 'value13', isEdit: false },
+		]
+	},
+	{
+		id: id(),
+		fields: [
+			{ name: 'prop1', value: 'value21', isEdit: false },
+			{ name: 'prop2', value: 'value22', isEdit: false },
+			{ name: 'prop3', value: 'value23', isEdit: false },
+		]
+	},
+	{
+		id: id(),
+		fields: [
+			{ name: 'prop1', value: 'value31', isEdit: false },
+			{ name: 'prop2', value: 'value32', isEdit: false },
+			{ name: 'prop3', value: 'value33', isEdit: false },
+		]
+	},
 ];
 
 function App() {
-	const [value, setValue] = useState('text');
-	const [isEdit, setIsEdit] = useState(true);
-
-	let par;
-	if (isEdit) {
-		par = <p><input value={value} onChange={e => setValue(e.target.value)} onBlur={() => setIsEdit(!isEdit)} /></p>
-	}
-	else {
-		par = <p onClick={() => setIsEdit(!isEdit)}>{value}</p>
-	}
-
-	const [value2, setValue2] = useState('text2');
-	const [isEdit2, setIsEdit2] = useState(false);
-
-	let par2;
-	if (isEdit2) {
-		par2 = <p>
-			<input value={value2} onChange={e => setValue2(e.target.value)} /><br />
-			<button onClick={() => setIsEdit2(true)}>Edit</button>
-			<button onClick={() => setIsEdit2(false)}>View</button>
-		</p>
-	}
-	else {
-		par2 = <p>
-			{value2}<br />
-			<button onClick={() => setIsEdit2(true)}>Edit</button>
-			<button onClick={() => setIsEdit2(false)}>View</button>
-		</p>;
-	}
 
 	const [notes, setNotes] = useState(initNotes);
-	const result = notes.map((note, index) => {
-		let elem;
-		if(note.isEdit){
-			elem = <input value={note.text} onChange={e=>changeInput(index, e, notes, setNotes)} onBlur={()=>endEdit(index, notes, setNotes)}/>
-		}
-		else{
-			elem = <span onClick={()=>startEdit(index, notes, setNotes)}>{note.text}</span>
-		}
-		return <li key={index}>{elem}</li>;
+
+	const rows = notes.map(note => {
+		const cells = note.fields.map(field => {
+			let element;
+			if (field.isEdit) {
+				element = <input
+					value={field.value}
+					onChange={e => changeCell(note.id, field.name, e)}
+					onBlur={() => endEdit(note.id, field.name)}
+				/>
+			}
+			else {
+				element = <span onClick={() => startEdit(note.id, field.name)}>{field.value}</span>
+			}
+
+			return <td key={field.name}>{element}</td>
+		});
+		return <tr key={note.id}>{cells}</tr>
 	});
 
-	function startEdit(index, objs, func){
-		var temp = Object.assign([], objs);
-		temp[index].isEdit = true;
-		func(temp);
+	function changeCell(noteId, fieldName, event) {
+		changeState(noteId, fieldName, 'value', event.target.value)
 	}
-	function endEdit(index, objs, func){
-		var temp = Object.assign([], objs);
-		temp[index].isEdit = false;
-		func(temp);
+	function endEdit(noteId, fieldName) {
+		changeState(noteId, fieldName, 'isEdit', false)
 	}
-	function changeInput(index, event, objs, func){
-		var temp = Object.assign([], objs);
-		temp[index].text = event.target.value;
-		func(temp);
+	function startEdit(noteId, fieldName) {
+		changeState(noteId, fieldName, 'isEdit', true);
 	}
-
-	const [notes2, setNotes2] = useState(initNotes);
-	const renderNotes2 = notes2.map((note, index)=>{
-		let el;
-		if(note.isEdit){
-			el = <input value={note.text} onChange={e=>changeInput(index, e, notes2, setNotes2)}/>
-		}
-		else{
-			el = <span>{note.text}</span>
-		}
-		
-		return(
-			<li key={index}>
-				{el}
-				<button onClick={()=>startOrEndEdit(index, notes2, setNotes2)}>{note.isEdit ? 'End edit' : 'Start edit'}</button>
-			</li>
-		);
-	});
-	function startOrEndEdit(index, objss, func){
-		var temp = Object.assign([], objss);
-		temp[index].isEdit = !temp[index].isEdit;
-		func(temp);
+	function changeState(noteId, fieldName, editedField, value) {
+		setNotes(notes.map(note => {
+			if (note.id === noteId) {
+				const fields = note.fields.map(field => {
+					if (field.name === fieldName) {
+						return { ...field, [editedField]: value };
+					}
+					else {
+						return field;
+					}
+				});
+				// Важный момент, если вернуть без "id:",
+				// то поле, содержащее id, станет называться noteId !!!!!!!!
+				return { id:noteId, fields:fields };
+			}
+			else {
+				return note;
+			}
+		}));
 	}
 
 	return (
 		<>
 			<div className="borderedExaplesLessonsFromTasks">
 				<div className="borderedDiv">
-					{par}
-				</div>
-				<div className="borderedDiv">
-					<ul>
-						{result}
-					</ul>
-				</div>
-			</div>
-
-			<div className="borderedExaplesLessonsFromTasks">
-				<div className="borderedDiv">
-					{par2}
-				</div>
-				<div className="borderedDiv">
-					<ul>
-						{renderNotes2}
-					</ul>
+					<table border="1px">
+						<tbody>
+							{rows}
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</>

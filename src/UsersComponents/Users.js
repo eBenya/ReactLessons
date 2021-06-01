@@ -7,9 +7,9 @@ function id() {
 }
 
 const initUsers = [
-    { id: id(), name: 'user1', surname: 'surn1', age: 30 },
-    { id: id(), name: 'user2', surname: 'surn2', age: 31 },
-    { id: id(), name: 'user3', surname: 'surn3', age: 32 },
+    { id: id(), name: 'user1', surname: 'surn1', age: 30, isBanned: true },
+    { id: id(), name: 'user2', surname: 'surn2', age: 31, isBanned: false },
+    { id: id(), name: 'user3', surname: 'surn3', age: 32, isBanned: false },
 ];
 
 function Users() {
@@ -20,8 +20,19 @@ function Users() {
         surname={val.surname}
         age={val.age}
         id={val.id}
+        isBanned={val.isBanned}
+        banFunc={banUser}
     />
     );
+
+    function banUser(id, isBan){
+        setUsers(users.map(user=>{
+            if(user.id === id){
+                user.isBanned = isBan;
+            }
+            return user;
+        }))
+    }
     return (
         <div>
             {renderUsers}

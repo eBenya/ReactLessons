@@ -1,7 +1,7 @@
 import React from 'react';
 import UserField from './UserField';
 
-function User({ obj, banFunc, editToogleFunc, editDataFunc }) {
+function User({ obj, banFunc, editDataFunc }) {
     const objKeys = Object.keys(obj);
     return (
         <p>
@@ -11,24 +11,18 @@ function User({ obj, banFunc, editToogleFunc, editDataFunc }) {
                 id={obj.id}
                 textContent={obj.name}
                 type={objKeys[1]}
-                isEdit={obj.isEdit}
-                editToogleFunc={editToogleFunc}
                 editDataFunc={editDataFunc}
             />
             <UserField
                 id={obj.id}
                 textContent={obj.surname}
                 type={objKeys[2]}
-                isEdit={obj.isEdit}
-                editToogleFunc={editToogleFunc}
                 editDataFunc={editDataFunc}
             />
             <UserField
                 id={obj.id}
                 textContent={obj.age}
                 type={objKeys[3]}
-                isEdit={obj.isEdit}
-                editToogleFunc={editToogleFunc}
                 editDataFunc={editDataFunc}
             />
 

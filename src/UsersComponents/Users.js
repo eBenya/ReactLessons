@@ -7,9 +7,9 @@ function id() {
 }
 
 const initUsers = [
-    { id: id(), name: 'user1', surname: 'surn1', age: 30, isBanned: false, isEdit: false },
-    { id: id(), name: 'user2', surname: 'surn2', age: 31, isBanned: false, isEdit: false },
-    { id: id(), name: 'user3', surname: 'surn3', age: 32, isBanned: false, isEdit: false },
+    { id: id(), name: 'user1', surname: 'surn1', age: 30, isBanned: false },
+    { id: id(), name: 'user2', surname: 'surn2', age: 31, isBanned: false },
+    { id: id(), name: 'user3', surname: 'surn3', age: 32, isBanned: false },
 ];
 
 function Users() {
@@ -18,7 +18,6 @@ function Users() {
         key={user.id}
         obj={user}        
         banFunc={banUser}
-        editToogleFunc={editUserToogleMode}
         editDataFunc={editUser}
     />
     );
@@ -26,15 +25,6 @@ function Users() {
         setUsers(users.map(user=>{
             if(user.id === id){
                 user[propName] = newValue;
-            }
-            return user;
-        }));
-    }
-
-    function editUserToogleMode(id) {
-        setUsers(users.map(user => {
-            if (user.id === id) {
-                user.isEdit = !user.isEdit;
             }
             return user;
         }));

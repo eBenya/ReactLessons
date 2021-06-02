@@ -7,9 +7,9 @@ function id() {
 }
 
 const initProds = [
-    { id: id(), name: 'product1', cost: 100, isEdit: false },
-    { id: id(), name: 'product2', cost: 200, isEdit: false },
-    { id: id(), name: 'product3', cost: 300, isEdit: false },
+    { id: id(), name: 'product1', cost: 100, catg: 'catg1' },
+    { id: id(), name: 'product2', cost: 200, catg: 'catg2' },
+    { id: id(), name: 'product3', cost: 300, catg: 'catg3' },
 ];
 
 function Products() {
@@ -19,21 +19,10 @@ function Products() {
         id={val.id}
         name={val.name}
         cost={val.cost}
-        isEdit={val.isEdit}
-        toggleMode={toggleMode}
+        catg={val.catg}
         editProd={editProd}
     />
     );
-
-    function toggleMode(id) {
-        setProds(prods.map(prod => {
-            if (prod.id === id) {
-                prod.isEdit = !prod.isEdit;
-            }
-
-            return prod;
-        }));
-    }
     function editProd(id, propName, newValue) {
         setProds(prods.map(prod => {
             if (prod.id == id) {
@@ -44,9 +33,11 @@ function Products() {
     }
 
     return (
-        <div>
-            {items}
-        </div>
+        <table border="1px">
+            <tbody>
+                {items}
+            </tbody>
+        </table>
     )
 }
 
